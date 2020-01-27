@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 
@@ -8,9 +8,10 @@ app = Flask(__name__)
 CORS(app)
 
 UPLOAD_DIR = "upload_dir/"
-@app.route('/upload', methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-def api():
+node_list = {}
 
+@app.route('/first-run', methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+def upload():
     if request.method == 'POST':
         if (request.form['file']):
             # pin file
@@ -27,6 +28,37 @@ def api():
             return finalfn
 
     return "lol"
+
+@app.route('/nodes/', defaults={'eth_address': None,'ip': None}, methods = ['GET', 'POST', 'DELETE'])
+@app.route('/nodes/<eth_address>/', defaults={'ip': None}, methods = ['GET', 'POST', 'DELETE'])
+@app.route('/nodes/<eth_address>/<ip>/', methods = ['GET', 'POST', 'DELETE'])
+def nodes(eth_address, ip):
+
+    if not eth_address:
+        return jsonify(node_list), 200
+
+    if eth_address:
+        doesExist = eth_address in node_list
+        if request.method == 'GET' and doesExist:
+            return jsonify({
+                eth_address: node_list[eth_address]
+            }), 200
+        elif request.method == 'GET' :
+            return jsonify("Not in List"), 400
+
+        if request.method == 'POST':
+            if ip:
+                node_list[eth_address] = ip
+                return jsonify("Success"), 200
+            else:
+                return jsonify("Invalid IP"), 400
+
+        if request.method == 'DELETE':
+            node_list.pop(eth_address)
+            return jsonify("Success"), 200
+
+    else:
+        return jsonify("Invalid Ethereum Address"), 400
 
 @app.route('/')
 def hello():
