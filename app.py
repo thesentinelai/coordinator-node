@@ -27,7 +27,7 @@ print(f"Connected to IPFS v{client.version()['Version']}")
 def send_to_train(task_id = 1):
     if (len(node_list) < 1):
         print("No Node Connected")
-        return 0
+        return 0, 200
     else:
         ip, address = choice(list(node_list.items())) # key, value
         print(f"Assigning TASKID:{task_id} to {ip}")
@@ -68,11 +68,11 @@ def upload():
 
     return "lol", 400
 
-@app.route('/sendtrain/<int:task_id>/', methods = ['GET', 'POST'])
+@app.route('/sendtrain/<int:task_id>', methods = ['GET', 'POST', 'OPTIONS'])
 def sendtrain(task_id):
-    return send_to_train(int(task_id))
+    return send_to_train(task_id)
 
-@app.route('/next-run/<int:task_id>/', methods = ['GET', 'POST'])
+@app.route('/next-run/<int:task_id>/', methods = ['GET', 'POST',  'OPTIONS'])
 def nextrun(task_id):
 
     """ Starts the next round for the model """
