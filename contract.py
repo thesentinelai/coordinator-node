@@ -15,13 +15,7 @@ contractABI= [
 			}
 		],
 		"name": "createTask",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
+		"outputs": [],
 		"payable": True,
 		"stateMutability": "payable",
 		"type": "function"
@@ -123,13 +117,7 @@ contractABI= [
 			}
 		],
 		"name": "storeFile",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
+		"outputs": [],
 		"payable": False,
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -146,16 +134,15 @@ contractABI= [
 				"internalType": "string",
 				"name": "_modelHash",
 				"type": "string"
+			},
+			{
+				"internalType": "address payable",
+				"name": "computer",
+				"type": "address"
 			}
 		],
 		"name": "updateModelForTask",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
+		"outputs": [],
 		"payable": False,
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -315,4 +302,4 @@ contractABI= [
 		"type": "function"
 	}
 ]
-contractAddress = "0x6D00ae597d7A96B347Cf39Aa508df6db5ECFEfd1"
+contractAddress = "0x2317d8504FdC96De4Ee82DfEd023B54cBBed1AE3"

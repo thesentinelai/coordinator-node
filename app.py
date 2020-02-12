@@ -72,35 +72,46 @@ def upload():
 def sendtrain(task_id):
     return send_to_train(task_id)
 
-@app.route('/next-run/<int:task_id>/', methods = ['GET', 'POST',  'OPTIONS'])
+@app.route('/next-run/<int:task_id>', methods = ['GET', 'POST',  'OPTIONS'])
 def nextrun(task_id):
 
     """ Starts the next round for the model """
 
-    eth_address = Web3.toChecksumAddress("0xBeb71662FF9c08aFeF3866f85A6591D4aeBE6e4E")
-    if(request.args.get('modelHash')):
-        eth_address = request.args.get('modelHash')
+    model_hashes = Sentinel.functions.getTaskHashes(task_id).call()
+    model_hashes = [x for x in list(model_hashes) if x.strip()]
+    task_data = Sentinel.functions.SentinelTasks(task_id).call() # taskID, currentRound, totalRounds, cost
 
-    # w3 = Web3(HTTPProvider('https://testnet2.matic.network'))
-    # Sentinel = w3.eth.contract(address=contractAddress,abi=contractABI)
-    acct = w3.eth.account.privateKeyToAccount(getenv("PRIVATEKEY"))
-    txn = Sentinel.functions.updateModelForTask(int(task_id), str(request.args.get('modelHash'))).buildTransaction({
-        "nonce": w3.eth.getTransactionCount(acct.address),
-        "from": acct.address,
-        "gas": 65000,
-        "gasPrice": 0,
-        "value": 0,
-        "chainId": 8995,
-    })
+    if (len(model_hashes) >= task_data[2]):
+        print(f"TASKID:{task_id} is completed.")
+        return "Task Completed", 200
 
-    signed_txn = w3.eth.account.signTransaction(txn, getenv("PRIVATEKEY"))
-    tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
-    tx_hash = str(tx_hash.hex())
-    print(tx_hash)
+    else:
+        req_data = request.get_json()
+        modelHash = req_data['modelHash']
+        ethAddress = req_data['ethAddress']
 
-    send_to_train(int(task_id))
+        acct = w3.eth.account.privateKeyToAccount(getenv("PRIVATEKEY"))
+        txnData = {
+            "nonce": w3.eth.getTransactionCount(acct.address),
+            "from": acct.address,
+            "gas": 3000000,
+            "gasPrice": 1,
+            "value": 0,
+            "chainId": 8995,
+        }
+        print([int(task_id), str(modelHash),  Web3.toChecksumAddress(ethAddress)])
 
-    return tx_hash
+        txn = Sentinel.functions.updateModelForTask(int(task_id), str(modelHash),  Web3.toChecksumAddress(ethAddress) ).buildTransaction(txnData)
+
+        signed_txn = w3.eth.account.signTransaction(txn, getenv("PRIVATEKEY"))
+        tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        tx_hash = str(tx_hash.hex())
+
+        print(tx_hash)
+
+        send_to_train(int(task_id))
+
+        return tx_hash
 
 @app.route('/nodes', methods = ['GET', 'POST', 'DELETE'])
 def nodes():
