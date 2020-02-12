@@ -1,4 +1,5 @@
 from flask import Flask, request, Response, jsonify
+from os import getenv, path, makedirs
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from contract import contractABI, contractAddress
@@ -184,10 +185,12 @@ if __name__ == '__main__':
         print("Web3 Not Connected")
         exit(0)
 
+    if not path.exists('upload_dir'): makedirs('upload_dir')
+
     Sentinel = w3.eth.contract(address=contractAddress,abi=contractABI)
 
     app.run(
-      host="127.0.0.1",
+      host="0.0.0.0",
       port=port,
       debug=False,
       use_reloader=False,
