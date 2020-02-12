@@ -2,16 +2,15 @@
 The Coordinator Node for The Sentinel AI
 
 ## 1. Installation
-1. [IPFS](https://docs.ipfs.io/guides/guides/install/)
-2. Python Dependencies ```pip install -r requirements.txt```
+1. Python Dependencies ```pip3 install -r requirements.txt```
+2. Gunicorn ```apt install gunicorn3```
 
-## 2. Setup
+## 2. Running the code
 ```
-ipfs init
+sudo gunicorn3 app:app --workers 3 --threads=2 --bind 0.0.0.0:5005 --log-file app.log --access-logfile access.log --log-level DEBUG
 ```
 
-## 3. Running the Code
+## 3. Code Linting
 ```
-ipfs daemon
-python app.py
+pylint --rcfile=pylintrc app.py
 ```

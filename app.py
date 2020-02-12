@@ -20,7 +20,10 @@ CORS(app)
 UPLOAD_DIR = "upload_dir/"
 node_list = {}
 
-ipfs_api = '/ip4/127.0.0.1/tcp/5001/http'
+port = int(getenv('PORT', str(5000)))
+
+# ipfs_api = '/ip4/127.0.0.1/tcp/5001/http'
+ipfs_api = '/dns/ipfs.infura.io/tcp/5001/https'
 client = ipfshttpclient.connect(ipfs_api)
 print(f"Connected to IPFS v{client.version()['Version']}")
 
@@ -182,4 +185,10 @@ if __name__ == '__main__':
         exit(0)
 
     Sentinel = w3.eth.contract(address=contractAddress,abi=contractABI)
-    app.run(host="127.0.0.1", port="5000", debug=True, use_reloader=False, threaded=True)
+
+    app.run(
+      host="127.0.0.1",
+      port=port,
+      debug=False,
+      use_reloader=False,
+      threaded=True)
