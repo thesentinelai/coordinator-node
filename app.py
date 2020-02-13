@@ -48,27 +48,21 @@ def upload():
 
     """ Upload handler """
 
-    reqJSON = request.get_json()
-    print(reqJSON)
-
     if request.method == 'POST':
 
-        if (reqJSON and 'file_name' in reqJSON):
-            res = client.add(f"{UPLOAD_DIR}{reqJSON['file_name']}")
-            print(f"Deployed {res['Hash']} to IPFS")
-            # client.pin_ls(type='all')
-            return res['Hash'], 200
-
-        elif(type(request.files['file']) == FileStorage):
+        if type(request.files['file']) == FileStorage:
             f = request.files['file']
             now = str(datetime.datetime.now())
             fn = str(f.filename).split(".")[0]
             fext = str(f.filename).split(".")[1]
-            if( fext == "h5"):
+            if fext == "h5":
                 finalfn = secure_filename(f"{fn}{now}.{fext}")
                 f.save(f"{UPLOAD_DIR}{finalfn}")
-                print(fn)
-                return finalfn
+                print("Adding File to IPFS")
+                res = client.add(f"{UPLOAD_DIR}{finalfn}")
+                print(finalfn)
+                print(f"Deployed {res['Hash']} to IPFS")
+                return str(res['Hash'])
             else:
                 print("invald file")
                 return "Please Upload a Valid Tensorflow Model(.h5) File", 400
