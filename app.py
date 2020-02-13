@@ -49,6 +49,7 @@ def upload():
     """ Upload handler """
 
     reqJSON = request.get_json()
+    print(reqJSON)
 
     if request.method == 'POST':
 
@@ -66,10 +67,13 @@ def upload():
             if( fext == "h5"):
                 finalfn = secure_filename(f"{fn}{now}.{fext}")
                 f.save(f"{UPLOAD_DIR}{finalfn}")
+                print(fn)
                 return finalfn
             else:
+                print("invald file")
                 return "Please Upload a Valid Tensorflow Model(.h5) File", 400
 
+    print("Unsatisfied conditions")
     return "lol", 400
 
 @app.route('/sendtrain/<int:task_id>', methods = ['GET', 'POST', 'OPTIONS'])
