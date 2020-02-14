@@ -99,7 +99,7 @@ def nextrun(task_id):
             "gas": 3000000,
             "gasPrice": 1,
             "value": 0,
-            "chainId": 8995,
+            "chainId": 16110,
         }
         print([int(task_id), str(modelHash),  Web3.toChecksumAddress(ethAddress)])
 
@@ -178,10 +178,12 @@ def hello():
 
 
 if __name__ == '__main__':
-    w3 = Web3(HTTPProvider('https://testnet2.matic.network'))
+    w3 = Web3(HTTPProvider('https://betav2.matic.network'))
     if not w3.isConnected():
         print("Web3 Not Connected")
-        exit(0)
+        sys.exit(0)
+    else:
+        print(f'Connected to Web3 v{w3.api}')
 
     if not path.exists('upload_dir'): makedirs('upload_dir')
 

@@ -25,31 +25,6 @@ contractABI= [
 		"inputs": [
 			{
 				"indexed": True,
-				"internalType": "address",
-				"name": "_user",
-				"type": "address"
-			},
-			{
-				"indexed": False,
-				"internalType": "string",
-				"name": "_fileHash",
-				"type": "string"
-			},
-			{
-				"indexed": False,
-				"internalType": "uint256",
-				"name": "_time",
-				"type": "uint256"
-			}
-		],
-		"name": "fileAdded",
-		"type": "event"
-	},
-	{
-		"anonymous": False,
-		"inputs": [
-			{
-				"indexed": True,
 				"internalType": "uint256",
 				"name": "taskID",
 				"type": "uint256"
@@ -111,21 +86,6 @@ contractABI= [
 		"constant": False,
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "_fileHash",
-				"type": "string"
-			}
-		],
-		"name": "storeFile",
-		"outputs": [],
-		"payable": False,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": False,
-		"inputs": [
-			{
 				"internalType": "uint256",
 				"name": "_taskID",
 				"type": "uint256"
@@ -145,21 +105,6 @@ contractABI= [
 		"outputs": [],
 		"payable": False,
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": True,
-		"inputs": [],
-		"name": "getFiles",
-		"outputs": [
-			{
-				"internalType": "string[]",
-				"name": "",
-				"type": "string[]"
-			}
-		],
-		"payable": False,
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -263,32 +208,6 @@ contractABI= [
 				"type": "uint256"
 			}
 		],
-		"name": "UserFiles",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": False,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": True,
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
 		"name": "UserTaskIDs",
 		"outputs": [
 			{
@@ -302,4 +221,4 @@ contractABI= [
 		"type": "function"
 	}
 ]
-contractAddress = "0x2317d8504FdC96De4Ee82DfEd023B54cBBed1AE3"
+contractAddress = "0xA7F599AeE2dd3AB3a29D54820a9Ee12938cdb2fC"
