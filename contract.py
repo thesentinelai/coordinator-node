@@ -1,5 +1,5 @@
 
-contractABI= [
+contract_ABI = [
 	{
 		"constant": False,
 		"inputs": [
@@ -221,4 +221,4 @@ contractABI= [
 		"type": "function"
 	}
 ]
-contractAddress = "0xA7F599AeE2dd3AB3a29D54820a9Ee12938cdb2fC"
+contract_address = "0xA7F599AeE2dd3AB3a29D54820a9Ee12938cdb2fC"
