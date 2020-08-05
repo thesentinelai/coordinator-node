@@ -1,2 +1,5 @@
 /upload_dir
 /__pycache__
+app.log
+access.log
+
