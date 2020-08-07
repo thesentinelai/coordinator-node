@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 import ipfshttpclient
 import requests
 from contract import contract_ABI, contract_address
+import logging
 
 load_dotenv()
 
