@@ -1,7 +1,6 @@
 
-contract_ABI = [
+contractABI = [
 	{
-		"constant": False,
 		"inputs": [
 			{
 				"internalType": "string",
@@ -16,9 +15,44 @@ contract_ABI = [
 		],
 		"name": "createTask",
 		"outputs": [],
-		"payable": True,
 		"stateMutability": "payable",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_coordinatorAddress",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": False,
+		"inputs": [
+			{
+				"indexed": True,
+				"internalType": "address",
+				"name": "_user",
+				"type": "address"
+			},
+			{
+				"indexed": False,
+				"internalType": "string",
+				"name": "_fileHash",
+				"type": "string"
+			},
+			{
+				"indexed": False,
+				"internalType": "uint256",
+				"name": "_time",
+				"type": "uint256"
+			}
+		],
+		"name": "fileAdded",
+		"type": "event"
 	},
 	{
 		"anonymous": False,
@@ -83,7 +117,32 @@ contract_ABI = [
 		"type": "event"
 	},
 	{
-		"constant": False,
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_fileHash",
+				"type": "string"
+			}
+		],
+		"name": "storeFile",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_coordinatorAddress",
+				"type": "address"
+			}
+		],
+		"name": "updateCoordinator",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -103,12 +162,36 @@ contract_ABI = [
 		],
 		"name": "updateModelForTask",
 		"outputs": [],
-		"payable": False,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"constant": True,
+		"inputs": [],
+		"name": "coordinatorAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getFiles",
+		"outputs": [
+			{
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "getTaskCount",
 		"outputs": [
@@ -118,12 +201,10 @@ contract_ABI = [
 				"type": "uint256"
 			}
 		],
-		"payable": False,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": True,
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -139,12 +220,10 @@ contract_ABI = [
 				"type": "string[]"
 			}
 		],
-		"payable": False,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": True,
 		"inputs": [],
 		"name": "getTasksOfUser",
 		"outputs": [
@@ -154,12 +233,23 @@ contract_ABI = [
 				"type": "uint256[]"
 			}
 		],
-		"payable": False,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": True,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -190,12 +280,34 @@ contract_ABI = [
 				"type": "uint256"
 			}
 		],
-		"payable": False,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": True,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "UserFiles",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -216,9 +328,8 @@ contract_ABI = [
 				"type": "uint256"
 			}
 		],
-		"payable": False,
 		"stateMutability": "view",
 		"type": "function"
 	}
 ]
-contract_address = "0xA7F599AeE2dd3AB3a29D54820a9Ee12938cdb2fC"
+contractAddress = "0x6d81122f119d2893C2Ab91F3F1cBc771bBBfBA26"

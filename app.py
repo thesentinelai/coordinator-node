@@ -1,6 +1,7 @@
 """ Coordinating Server """
 
 from os import getenv, path, makedirs
+import sys
 from random import choice
 import datetime
 from flask import Flask, request, jsonify
@@ -11,7 +12,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import ipfshttpclient
 import requests
-from contract import contract_ABI, contract_address
+from contract import contractABI, contractAddress
 import logging
 
 load_dotenv()
@@ -22,9 +23,6 @@ CORS(app)
 UPLOAD_DIR = "upload_dir/"
 node_list = {}
 
-port = int(getenv('PORT', str(5000)))
-
-# ipfs_api = '/ip4/127.0.0.1/tcp/5001/http'
 ipfs_api = '/dns/ipfs.infura.io/tcp/5001/https'
 client = ipfshttpclient.connect(ipfs_api)
 print(f"Connected to IPFS v{client.version()['Version']}")
@@ -100,9 +98,9 @@ def nextrun(task_id):
         "nonce": w3.eth.getTransactionCount(acct.address),
         "from": acct.address,
         "gas": 3000000,
-        "gasPrice": 1,
+        "gasPrice": 100000000,
         "value": 0,
-        "chainId": 16110,
+        "chainId": 80001,
     }
     txn_values = [int(task_id), str(model_hash), str(eth_address)]
     print(f"Txn Data : {txn_values}")
@@ -139,7 +137,7 @@ def nodes():
     return jsonify(node_list), 200
 
     # if ip: ip = unquote(ip)
-  if eth_address:
+  if eth_address != None:
     if request.method == 'GET' and ip in node_list:
       return jsonify({
           ip: ip,
@@ -150,7 +148,7 @@ def nodes():
       return jsonify("Not in List"), 400
 
     if request.method == 'POST':
-      if eth_address and ip:
+      if eth_address != None and ip != None:
         node_list[ip] = eth_address
         return jsonify("Success"), 200
       else:
@@ -161,6 +159,12 @@ def nodes():
       return jsonify("Success"), 200
   else:
     return jsonify("Invalid Ethereum Address"), 400
+
+
+@app.route('/nodes/clear', methods=['GET', 'POST', 'DELETE'])
+def nodes_clear():
+  node_list = {}
+  return jsonify("Cleared"), 200
 
 @app.route('/', methods=['GET', 'OPTIONS', 'DELETE'])
 def hello():
@@ -181,7 +185,7 @@ def hello():
 
 # Start Initialization
 
-w3 = Web3(HTTPProvider('https://betav2.matic.network'))
+w3 = Web3(HTTPProvider('https://rpc-mumbai.matic.today'))
 if not w3.isConnected():
   print("Web3 Not Connected")
   sys.exit(0)
@@ -190,7 +194,7 @@ else:
 
 if not path.exists('upload_dir'): makedirs('upload_dir')
 
-sentinel_contract = w3.eth.contract(address=contract_address, abi=contract_ABI)
+sentinel_contract = w3.eth.contract(address=contractAddress, abi=contractABI)
 
 # End Initialization
 
@@ -205,7 +209,7 @@ if __name__ == '__main__':
 
   app.run(
       host="0.0.0.0",
-      port=port,
+      port=int(getenv('PORT', str(5000))),
       debug=False,
       use_reloader=False,
       threaded=True)
