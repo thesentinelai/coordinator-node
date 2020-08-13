@@ -205,6 +205,18 @@ def nodes_clear():
   node_list = {}
   return jsonify("Cleared"), 200
 
+@app.route('/logs/app', methods=['GET'])
+def logs_app():
+
+  """ Make Application Logs Accessible """
+
+  file_content = ''
+  f =  open("app.log")
+  file_content = f.read()
+
+  return file_content, 200
+
+
 @app.route('/', methods=['GET', 'OPTIONS', 'DELETE'])
 def hello():
 
