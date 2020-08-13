@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 import ipfshttpclient
 import requests
 from contract import contractABI, contractAddress
+from utils import getKeysByValue
 import logging
 
 load_dotenv()
@@ -20,7 +21,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-UPLOAD_DIR = "upload_dir/"
+global node_list
 node_list = {}
 
 ipfs_api = '/dns/ipfs.infura.io/tcp/5001/https'
@@ -46,32 +47,6 @@ def send_to_train(task_id=1):
       print("ASSIGNMENT FAILED !!!")
       return "failed", 400
 
-@app.route('/first-run', methods=['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-def upload():
-
-  """ Upload handler """
-
-  if request.method == 'POST':
-    if isinstance(request.files['file'], FileStorage):
-      f = request.files['file']
-      now = str(datetime.datetime.now())
-      fn = str(f.filename).split(".")[0]
-      fext = str(f.filename).split(".")[1]
-      if fext == "h5":
-        finalfn = secure_filename(f"{fn}{now}.{fext}")
-        f.save(f"{UPLOAD_DIR}{finalfn}")
-        print("Adding File to IPFS")
-        res = client.add(f"{UPLOAD_DIR}{finalfn}")
-        print(finalfn)
-        print(f"Deployed {res['Hash']} to IPFS")
-        return str(res['Hash'])
-      else:
-        print("invald file")
-        return "Please Upload a Valid Tensorflow Model(.h5) File", 400
-
-    print("Unsatisfied conditions")
-    return "No Can Do", 400
-
 @app.route('/sendtrain/<int:task_id>', methods=['GET', 'POST', 'OPTIONS'])
 def sendtrain(task_id):
   return send_to_train(task_id)
@@ -83,7 +58,7 @@ def nextrun(task_id):
 
   model_hashes = sentinel_contract.functions.getTaskHashes(task_id).call()
   model_hashes = [x for x in list(model_hashes) if x.strip()]
-#   print(model_hashes)
+  #print(model_hashes)
   task_data = sentinel_contract.functions.SentinelTasks(task_id).call() # taskID, currentRound, totalRounds, cost
 
   if len(model_hashes) >= task_data[2]:
@@ -117,52 +92,116 @@ def nextrun(task_id):
     send_to_train(int(task_id))
     return tx_hash
 
-@app.route('/nodes', methods=['GET', 'POST', 'DELETE'])
+
+@app.route('/nodes', methods=['GET'])
 def nodes():
 
-  """ Handles the incoming node connections """
+  """ Return all the nodes in the network """
 
-  req_data = request.get_json()
-  if req_data and 'eth_address' in req_data:
-    eth_address = req_data['eth_address']
-  else:
-    eth_address = None
+  return jsonify(node_list), 200
 
-  if req_data and 'ip' in req_data:
-    ip = req_data['ip']
-  else:
-    ip = None
+@app.route('/nodes/add', methods=['POST'])
+def nodes_add():
 
-  if not eth_address:
-    return jsonify(node_list), 200
+  """ Add a new node to the network """
 
-    # if ip: ip = unquote(ip)
-  if eth_address != None:
-    if request.method == 'GET' and ip in node_list:
-      return jsonify({
-          ip: ip,
-          eth_address: node_list[ip]
+  req_data = request.get_json(silent=True)
+
+  if req_data != None and 'ip' in req_data and 'eth_address' in req_data:
+
+      if 'ip' not in node_list:
+
+        node_list[req_data['ip']] = req_data['eth_address']
+
+        return jsonify({
+          'success':True,
+          'data': 'Node Added'
+        }), 200
+
+      else:
+        return jsonify({
+        'success':True,
+        'data':'Already Connected'
       }), 200
 
-    if request.method == 'GET':
-      return jsonify("Not in List"), 400
-
-    if request.method == 'POST':
-      if eth_address != None and ip != None:
-        node_list[ip] = eth_address
-        return jsonify("Success"), 200
-      else:
-        return jsonify("Invalid Values"), 400
-
-    if request.method == 'DELETE':
-      node_list.pop(ip)
-      return jsonify("Success"), 200
-  else:
-    return jsonify("Invalid Ethereum Address"), 400
+  else :
+    return jsonify({
+      'success':False,
+      'data':'Invalid Request Params'
+    }), 400
 
 
-@app.route('/nodes/clear', methods=['GET', 'POST', 'DELETE'])
+  return jsonify(node_list), 200
+
+@app.route('/nodes/updateHostName', methods=['POST'])
+def nodes_updatehostname():
+
+  """ Update the Host Name of a Node"""
+
+  req_data = request.get_json(silent=True)
+
+  if req_data != None and 'old_ip' in req_data and 'new_ip' in req_data:
+
+    if req_data['old_ip'] in node_list:
+
+      temp_ethadd = node_list[req_data['old_ip']]
+      node_list.pop(req_data['old_ip'])
+      node_list[req_data['new_ip']] = temp_ethadd
+
+      return jsonify({
+        'success':True,
+        'data': 'Hostname updated'
+      }), 200
+
+    else:
+      return jsonify({
+      'success':False,
+      'data':'Hostname not found'
+    }), 400
+
+
+  else :
+    return jsonify({
+      'success':False,
+      'data':'Invalid Request Params'
+    }), 400
+
+@app.route('/nodes/updateEthAddress', methods=['POST'])
+def nodes_updateethaddress():
+
+  """ Update the Ethereum Address of a Node"""
+
+  req_data = request.get_json(silent=True)
+
+  if req_data != None and 'old_eth_address' in req_data and 'new_eth_address' in req_data:
+
+    key_list = getKeysByValue(node_list, req_data['old_eth_address'])
+    if len(key_list) >= 1:
+
+      node_list[key_list[0]] = req_data['new_eth_address']
+
+      return jsonify({
+        'success':True,
+        'data': 'Ethereum Address updated'
+      }), 200
+
+    else:
+      return jsonify({
+      'success':False,
+      'data':'Ethereum Address not found'
+    }), 400
+
+  else :
+    return jsonify({
+      'success':False,
+      'data':'Invalid Request Params'
+    }), 400
+
+@app.route('/nodes/clearAll', methods=['GET'])
 def nodes_clear():
+
+  """ Clear all nodes connected to the network"""
+
   node_list = {}
   return jsonify("Cleared"), 200
 
@@ -191,8 +230,6 @@ if not w3.isConnected():
   sys.exit(0)
 else:
   print(f'Connected to Web3 v{w3.api}')
-
-if not path.exists('upload_dir'): makedirs('upload_dir')
 
 sentinel_contract = w3.eth.contract(address=contractAddress, abi=contractABI)
 

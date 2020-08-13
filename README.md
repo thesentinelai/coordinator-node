@@ -1,11 +1,20 @@
 # coordinator-node
 The Coordinator Node for The Sentinel AI
 
-## 1. Installation
+## 1. Installing Dependencies
 1. Python Dependencies ```pip3 install -r requirements.txt```
 2. Gunicorn ```apt install gunicorn3```
 
-## 2. Running the code
+## 2. Setup
+
+Setup a `.env` file in the root directory with the following details,
+```
+PRIVATEKEY = <private key of the Ethereum address>
+ETHADDRESS = <public key of the Ethereum address>
+PORT = <port_number>
+```
+
+## 3. Running the code
 
 ### 2.1 http
 ```
