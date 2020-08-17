@@ -24,7 +24,7 @@ CORS(app)
 global node_list
 node_list = {}
 
-ipfs_api = '/dns/ipfs.infura.io/tcp/5001/https'
+ipfs_api = '/ip4/204.236.188.162/tcp/5001/http'
 client = ipfshttpclient.connect(ipfs_api)
 print(f"Connected to IPFS v{client.version()['Version']}")
 
@@ -258,7 +258,7 @@ if __name__ == '__main__':
 
   app.run(
       host="0.0.0.0",
-      port=int(getenv('PORT', str(5000))),
+      port=int(getenv('PORT', str(3000))),
       debug=False,
       use_reloader=False,
       threaded=True)
