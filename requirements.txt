@@ -36,7 +36,7 @@ requests==2.22.0
 rlp==1.2.0
 six==1.15.0
 toolz==0.10.0
-urllib3==1.25.10
+urllib3==1.26.5
 varint==1.0.2
 web3==5.2.0
 websockets==7.0
